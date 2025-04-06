@@ -217,7 +217,7 @@ export default function AdminPanel() {
   };
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/chains')
+    fetch('http://localhost:5000/chains')
       .then(res => res.json())
       .then(data => setChains(data));
   }, []);
@@ -280,40 +280,48 @@ export default function AdminPanel() {
     className="p-2 bg-slate-900 rounded"
   />
   <button
-    onClick={handleAddChain}
-    className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white"
-  >
-    Add Chain
-  </button>
+  onClick={() => alert("Feature currently unavailable.")}
+  className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white"
+>
+  Add Chain
+</button>
 </div>
 
 
     {/* Chains Table */}
     <h3 className="text-lg font-semibold mb-2">All Hotel Chains</h3>
     <table className="w-full border border-gray-700 text-sm">
-      <thead className="bg-slate-800">
-        <tr>
-          <th className="p-2 border">Chain ID</th>
-          <th className="p-2 border">Name</th>
-          <th className="p-2 border">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {chains.map((chain) => (
-          <tr key={chain.chain_id} className="bg-slate-900 hover:bg-slate-800">
-            <td className="p-2 border">{chain.chain_id}</td>
-            <td className="p-2 border">{chain.name}</td>
-            <td className="p-2 border">
-              <button
-                onClick={() => handleDeleteChain(chain.chain_id)}
-                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
-              >
-                Remove
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
+    <thead className="bg-slate-800">
+  <tr>
+    <th className="p-2 border">Chain ID</th>
+    <th className="p-2 border">Name</th>
+    <th className="p-2 border">Headquarters</th>
+    <th className="p-2 border">Email</th>
+    <th className="p-2 border">Phone</th>
+    <th className="p-2 border">Actions</th>
+  </tr>
+</thead>
+<tbody>
+  {chains.map((chain) => (
+    <tr key={chain.chain_id} className="bg-slate-900 hover:bg-slate-800">
+      <td className="p-2 border">{chain.chain_id}</td>
+      <td className="p-2 border">{chain.name}</td>
+      <td className="p-2 border">{chain.headquarters_address}</td>
+      <td className="p-2 border">{chain.contact_email}</td>
+      <td className="p-2 border">{chain.contact_phone}</td>
+      <td className="p-2 border">
+      <button
+  disabled
+  title="This action requires upper-level permissions."
+  className="bg-gray-600 cursor-not-allowed text-white px-3 py-1 rounded opacity-50 text-center"
+>
+  Remove
+</button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
     </table>
   </div>
 )}

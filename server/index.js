@@ -7,6 +7,7 @@ const reservationRoutes = require('./routes/reservations');
 const employeeRoutes = require('./routes/employees');
 const rentalRoutes = require('./routes/rentals');
 const archiveRoutes = require('./routes/archive');
+const chainsRoutes = require('./routes/chains');
 
 app.use(cors());
 app.use(express.json());
@@ -16,6 +17,7 @@ app.use('/reservations', reservationRoutes);
 app.use('/employees', employeeRoutes);
 app.use('/rentals', rentalRoutes);
 app.use('/archive', archiveRoutes);
+app.use('/chains', chainsRoutes);
 
 app.get('/', (req, res) => {
   res.send('🚀 Server is running!');
