@@ -474,8 +474,8 @@ export default function AdminPanel() {
 )}
 
 
-
 {activeTab === 'views' && <ViewsSection />}
+
 {activeTab === 'archived' && <ArchivedSection />}
     </div>
   );

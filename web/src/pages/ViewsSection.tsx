@@ -1,63 +1,92 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+interface ZoneStat {
+  zone: string;
+  available_rooms: number;
+}
+
+interface CapacityStat {
+  hotel_id: number;
+  capacity: number;
+  count: number;
+}
 
 export default function ViewsSection() {
-  const [hotelId, setHotelId] = useState('');
-  const [roomStats] = useState([
-    { room_id: 101, hotel_id: 1, type: 'Single', capacity: 1 },
-    { room_id: 102, hotel_id: 1, type: 'Double', capacity: 2 },
-    { room_id: 201, hotel_id: 2, type: 'Family', capacity: 4 },
-    { room_id: 103, hotel_id: 3, type: 'Single', capacity: 1 },
-  ]);
+  const [zones, setZones] = useState<ZoneStat[]>([]);
+  const [capacities, setCapacities] = useState<CapacityStat[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const [areaStats] = useState([
-    { area: 'Ottawa', rooms: 23 },
-    { area: 'Toronto', rooms: 17 },
-    { area: 'Montreal', rooms: 10 },
-  ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const zoneRes = await fetch('http://localhost:5000/views/available-rooms');
+        const zoneData = await zoneRes.json();
 
-  const filtered = hotelId
-    ? roomStats.filter((r) => r.hotel_id === parseInt(hotelId))
-    : roomStats;
+        const capacityRes = await fetch('http://localhost:5000/views/room-capacity');
+        const capacityData = await capacityRes.json();
+
+        if (!Array.isArray(zoneData) || !Array.isArray(capacityData)) {
+          throw new Error("Invalid data format");
+        }
+
+        setZones(zoneData);
+        setCapacities(capacityData);
+      } catch (err: any) {
+        setError(err.message || 'Error loading views');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <p>Loading data...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
-    <div className="text-white space-y-8">
+    <div className="space-y-12">
       <div>
-        <h2 className="text-xl font-semibold mb-2">Available Rooms by Area</h2>
-        <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
-          {areaStats.map((area) => (
-            <div key={area.area} className="bg-slate-800 p-4 rounded-lg shadow">
-              <p className="text-sm">
-                <strong>Area:</strong> {area.area}
-              </p>
-              <p className="text-sm">
-                <strong>Rooms:</strong> {area.rooms}
-              </p>
-            </div>
-          ))}
-        </div>
+        <h2 className="text-xl font-semibold mb-4 text-blue-400">Available Rooms by Zone</h2>
+        <table className="w-full border border-gray-700 text-sm">
+          <thead className="bg-slate-800">
+            <tr>
+              <th className="p-2 border">Zone</th>
+              <th className="p-2 border">Available Rooms</th>
+            </tr>
+          </thead>
+          <tbody>
+            {zones.map((z, idx) => (
+              <tr key={idx} className="bg-slate-900 hover:bg-slate-800">
+                <td className="p-2 border">{z.zone}</td>
+                <td className="p-2 border">{z.available_rooms}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       <div>
-        <h2 className="text-xl font-semibold mb-2">Room Capacity by Hotel</h2>
-        <input
-          type="text"
-          placeholder="Enter Hotel ID"
-          value={hotelId}
-          onChange={(e) => setHotelId(e.target.value)}
-          className="mb-4 p-2 bg-slate-900 rounded w-full md:w-64"
-        />
-
-        <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((room) => (
-            <div key={room.room_id} className="bg-slate-800 p-4 rounded-lg shadow">
-              <p className="text-sm">
-                <strong>Room #{room.room_id}</strong>
-              </p>
-              <p className="text-sm">{room.type} — Capacity: {room.capacity}</p>
-              <p className="text-sm">Hotel ID: {room.hotel_id}</p>
-            </div>
-          ))}
-        </div>
+        <h2 className="text-xl font-semibold mb-4 text-green-400">Room Capacity by Hotel</h2>
+        <table className="w-full border border-gray-700 text-sm">
+          <thead className="bg-slate-800">
+            <tr>
+              <th className="p-2 border">Hotel ID</th>
+              <th className="p-2 border">Room Capacity</th>
+              <th className="p-2 border">Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            {capacities.map((c, idx) => (
+              <tr key={idx} className="bg-slate-900 hover:bg-slate-800">
+                <td className="p-2 border">{c.hotel_id}</td>
+                <td className="p-2 border">{c.capacity}</td>
+                <td className="p-2 border">{c.count}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

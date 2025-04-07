@@ -8,6 +8,7 @@ const employeeRoutes = require('./routes/employees');
 const rentalRoutes = require('./routes/rentals');
 const archiveRoutes = require('./routes/archive');
 const chainsRoutes = require('./routes/chains');
+const viewsRoutes = require('./routes/views');
 
 app.use(cors());
 app.use(express.json());
@@ -18,6 +19,7 @@ app.use('/employees', employeeRoutes);
 app.use('/rentals', rentalRoutes);
 app.use('/archive', archiveRoutes);
 app.use('/chains', chainsRoutes);
+app.use('/views', viewsRoutes);
 
 app.get('/', (req, res) => {
   res.send('🚀 Server is running!');
