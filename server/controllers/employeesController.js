@@ -26,4 +26,17 @@ const loginEmployee = async (req, res) => {
   }
 };
 
-module.exports = { loginEmployee };
+const getAllEmployees = async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM employee ORDER BY employee_id');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching employees:', err);
+    res.status(500).json({ error: 'Failed to fetch employees' });
+  }
+};
+
+module.exports = {
+  loginEmployee,
+  getAllEmployees,
+};

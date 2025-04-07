@@ -80,7 +80,7 @@ const initialEmployees: Employee[] = [
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState<'chains' | 'rooms' | 'employees' | 'views' | 'archived'>('chains');
   const [hotels, setHotels] = useState<Hotel[]>(initialHotels);
-  const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [chains, setChains] = useState<Chain[]>([]);
 
   const [chainForm, setChainForm] = useState<Chain>({
@@ -222,6 +222,12 @@ export default function AdminPanel() {
       .then(data => setChains(data));
   }, []);
 
+  useEffect(() => {
+    fetch('http://localhost:5000/employees')
+      .then(res => res.json())
+      .then(data => setEmployees(data));
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#0b1120] text-white p-8">
       <h1 className="text-3xl font-bold text-center text-blue-400 mb-8">Admin Panel</h1>
@@ -335,87 +341,139 @@ export default function AdminPanel() {
   <div>
     <h2 className="text-xl font-semibold mb-4">Manage Employees</h2>
 
-    <div className="bg-slate-800 p-4 rounded-lg mb-8 grid grid-cols-1 md:grid-cols-2 gap-3">
-  <div>
-    <label className="block text-sm mb-1">Employee ID</label>
-    <input name="employee_id" type="number" value={employeeForm.employee_id} onChange={handleEmployeeInput} className="p-2 w-full bg-slate-900 rounded" />
-  </div>
-  <div>
-    <label className="block text-sm mb-1">Hotel ID</label>
-    <input name="hotel_id" type="number" value={employeeForm.hotel_id} onChange={handleEmployeeInput} className="p-2 w-full bg-slate-900 rounded" />
-  </div>
-  <div>
-    <label className="block text-sm mb-1">Full Name</label>
-    <input name="full_name" type="text" value={employeeForm.full_name} onChange={handleEmployeeInput} className="p-2 w-full bg-slate-900 rounded" />
-  </div>
-  <div>
-    <label className="block text-sm mb-1">Address</label>
-    <input name="address" type="text" value={employeeForm.address} onChange={handleEmployeeInput} className="p-2 w-full bg-slate-900 rounded" />
-  </div>
-  <div>
-    <label className="block text-sm mb-1">Social Security #</label>
-    <input name="social_security_number" type="text" value={employeeForm.social_security_number} onChange={handleEmployeeInput} className="p-2 w-full bg-slate-900 rounded" />
-  </div>
-  <div>
-    <label className="block text-sm mb-1">Role</label>
-    <input disabled value="Staff" className="p-2 w-full bg-slate-900 rounded text-gray-400 cursor-not-allowed" />
-  </div>
-  <div>
-    <label className="block text-sm mb-1">Email</label>
-    <input name="email" type="email" value={employeeForm.email} onChange={handleEmployeeInput} className="p-2 w-full bg-slate-900 rounded" />
-  </div>
-  <div>
-    <label className="block text-sm mb-1">Password</label>
-    <input name="password" type="password" value={employeeForm.password} onChange={handleEmployeeInput} className="p-2 w-full bg-slate-900 rounded" />
-  </div>
-  <div className="flex items-end">
-    <button onClick={handleAddEmployee} className="bg-green-600 px-4 py-2 rounded hover:bg-green-700">
-      Add Employee
-    </button>
-  </div>
-</div>
+    {/* Employee Add Form */}
+    <div className="bg-slate-800 p-6 rounded-lg mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <label className="block text-sm text-gray-400 mb-1">Employee ID</label>
+        <input
+          name="employee_id"
+          type="number"
+          value={employeeForm.employee_id}
+          onChange={handleEmployeeInput}
+          className="p-2 w-full bg-slate-900 rounded"
+        />
+      </div>
+      <div>
+        <label className="block text-sm text-gray-400 mb-1">Hotel ID</label>
+        <input
+          name="hotel_id"
+          type="number"
+          value={employeeForm.hotel_id}
+          onChange={handleEmployeeInput}
+          className="p-2 w-full bg-slate-900 rounded"
+        />
+      </div>
+      <div>
+        <label className="block text-sm text-gray-400 mb-1">Full Name</label>
+        <input
+          name="full_name"
+          type="text"
+          value={employeeForm.full_name}
+          onChange={handleEmployeeInput}
+          className="p-2 w-full bg-slate-900 rounded"
+        />
+      </div>
+      <div>
+        <label className="block text-sm text-gray-400 mb-1">Address</label>
+        <input
+          name="address"
+          type="text"
+          value={employeeForm.address}
+          onChange={handleEmployeeInput}
+          className="p-2 w-full bg-slate-900 rounded"
+        />
+      </div>
+      <div>
+        <label className="block text-sm text-gray-400 mb-1">SSN</label>
+        <input
+          name="social_security_number"
+          type="text"
+          pattern="^\d{3}-\d{2}-\d{4}$"
+          placeholder="123-45-6789"
+          value={employeeForm.social_security_number}
+          onChange={handleEmployeeInput}
+          className="p-2 w-full bg-slate-900 rounded"
+        />
+      </div>
+      <div>
+        <label className="block text-sm text-gray-400 mb-1">Role</label>
+        <input
+          disabled
+          value="Staff"
+          className="p-2 w-full bg-slate-900 rounded text-gray-400 cursor-not-allowed"
+        />
+      </div>
+      <div>
+        <label className="block text-sm text-gray-400 mb-1">Email</label>
+        <input
+          name="email"
+          type="email"
+          value={employeeForm.email}
+          onChange={handleEmployeeInput}
+          className="p-2 w-full bg-slate-900 rounded"
+        />
+      </div>
+      <div>
+        <label className="block text-sm text-gray-400 mb-1">Password</label>
+        <input
+          name="password"
+          type="password"
+          value={employeeForm.password}
+          onChange={handleEmployeeInput}
+          className="p-2 w-full bg-slate-900 rounded"
+        />
+      </div>
+      <div className="flex items-end">
+        <button
+          onClick={handleAddEmployee}
+          className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white w-full"
+        >
+          Add Employee
+        </button>
+      </div>
+    </div>
 
     {/* Employees Table */}
     <h3 className="text-lg font-semibold mb-2">All Employees</h3>
-    <div className="overflow-auto max-h-[400px]">
-      <table className="w-full border border-gray-700 text-sm">
-        <thead className="bg-slate-800">
-          <tr>
-            <th className="p-2 border">ID</th>
-            <th className="p-2 border">Hotel</th>
-            <th className="p-2 border">Name</th>
-            <th className="p-2 border">Address</th>
-            <th className="p-2 border">SSN</th>
-            <th className="p-2 border">Role</th>
-            <th className="p-2 border">Email</th>
-            <th className="p-2 border">Actions</th>
+    <table className="w-full border border-gray-700 text-sm">
+      <thead className="bg-slate-800">
+        <tr>
+          <th className="p-2 border">ID</th>
+          <th className="p-2 border">Hotel</th>
+          <th className="p-2 border">Name</th>
+          <th className="p-2 border">Address</th>
+          <th className="p-2 border">SSN</th>
+          <th className="p-2 border">Role</th>
+          <th className="p-2 border">Email</th>
+          <th className="p-2 border">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {employees.map((emp) => (
+          <tr key={emp.employee_id} className="bg-slate-900 hover:bg-slate-800">
+            <td className="p-2 border">{emp.employee_id}</td>
+            <td className="p-2 border">{emp.hotel_id}</td>
+            <td className="p-2 border">{emp.full_name}</td>
+            <td className="p-2 border">{emp.address}</td>
+            <td className="p-2 border">{emp.social_security_number}</td>
+            <td className="p-2 border">{emp.role}</td>
+            <td className="p-2 border">{emp.email}</td>
+            <td className="p-2 border">
+              <button
+                onClick={() => handleRemoveEmployee(emp.employee_id)}
+                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+              >
+                Remove
+              </button>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {employees.map((emp) => (
-            <tr key={emp.employee_id} className="bg-slate-900 hover:bg-slate-800">
-              <td className="p-2 border">{emp.employee_id}</td>
-              <td className="p-2 border">{emp.hotel_id}</td>
-              <td className="p-2 border">{emp.full_name}</td>
-              <td className="p-2 border">{emp.address}</td>
-              <td className="p-2 border">{emp.social_security_number}</td>
-              <td className="p-2 border">{emp.role}</td>
-              <td className="p-2 border">{emp.email}</td>
-              <td className="p-2 border">
-                <button
-                  onClick={() => handleRemoveEmployee(emp.employee_id)}
-                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
-                >
-                  Remove
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        ))}
+      </tbody>
+    </table>
   </div>
 )}
+
+
 
 {activeTab === 'views' && <ViewsSection />}
 {activeTab === 'archived' && <ArchivedSection />}
